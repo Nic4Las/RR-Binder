@@ -39,5 +39,8 @@
     "tailwind-merge": "^2.2.0",
     "tailwind-variants": "^0.1.20",
     "zod": "^3.22.4"
+  },
+  "optionalDependencies": {
+    "@rollup/rollup-linux-x64-gnu": "4.9.5"
   }
 }

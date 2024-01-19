@@ -283,7 +283,7 @@
                     {#each chunks as chunk}
                         <div class="grid grid-cols-1 gap-2">
                             <div
-                                class="grid grid-cols-[minmax(50px,5%),minmax(0,80%),minmax(100px,15%)] gap-y-4 gap-x-2"
+                                class="grid grid-cols-[minmax(50px,5%),minmax(0,80%),minmax(100px,15%)] gap-y-4 gap-x-2 place-items-center"
                             >
                                 <div>
                                     {#if chunk.progress.done}
@@ -293,7 +293,7 @@
                                     {/if}
                                 </div>
 
-                                <div class="w-full place-self-start">
+                                <div class="w-full">
                                     <Tooltip.Root>
                                         <Tooltip.Trigger class="w-full">
                                             <div class="w-full grid grid-cols-1 gap-2">

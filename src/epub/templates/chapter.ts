@@ -14,7 +14,7 @@ export function renderChapter(chapter: Chapter, includeDate: boolean = false, in
         ${includeDate ? `<p>${chapter.metaData.date}</p>` : ""}
         ${includeSourceUrl ? `<p>Publication Date: ${chapter.metaData.url}</p>` : ""}
 
-        ${chapter.content.map((paragraph) => `<p>${paragraph}</p>`).join("")}
+        ${chapter.content.map((paragraph) => `<p>${paragraph}</p>`).join("\n")}
 
       </body>
       </html>

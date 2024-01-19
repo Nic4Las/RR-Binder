@@ -12,7 +12,7 @@
 
 <div >
     <Table.Root>
-        <Table.Caption>A list of your recent invoices.</Table.Caption>
+        <Table.Caption>All currently available Chapters.</Table.Caption>
         <Table.Header>
             <Table.Row>
                 <Table.Head class="w-[100px]">Chapter Nr.</Table.Head>

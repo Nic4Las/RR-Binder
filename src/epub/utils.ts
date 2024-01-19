@@ -1,33 +1,23 @@
-
 /**
  * https://stackoverflow.com/a/27979933/1339693
  */
-export function escapeXml(unsafe: string) {
+export function escapeXml(string: string, ignore: string = "") {
+    var pattern;
 
-    const matches = unsafe.match(/[<>&'"]/g);
+    if (string === null || string === undefined) return;
 
-    if (matches) {
-        matches.forEach((c) => {
-            let replacement = "";
-            switch (c) {
-                case "<":
-                    replacement = "&lt;";
-                    break;
-                case ">":
-                    replacement = "&gt;";
-                    break;
-                case "&":
-                    replacement = "&amp;";
-                    break;
-                case "'":
-                    replacement = "&apos;";
-                    break;
-                case '"':
-                    replacement = "&quot;";
-                    break;
-            }
-            unsafe = unsafe.replace(c, replacement);
-        });
-    }
-    return unsafe;
+    ignore = (ignore || "").replace(/[^&"<>\']/g, "");
+    pattern = "([&\"<>'])".replace(new RegExp("[" + ignore + "]", "g"), "");
+
+    return string.replace(new RegExp(pattern, "g"), function (str, item) {
+        return map[item];
+    });
 }
+
+let map: Record<string, string> = {
+    ">": "&gt;",
+    "<": "&lt;",
+    "'": "&apos;",
+    '"': "&quot;",
+    "&": "&amp;",
+};

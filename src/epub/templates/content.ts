@@ -1,7 +1,7 @@
 import type { NovelData } from "../../types/NovelData";
 import { escapeXml } from "../utils";
 
-export function content(novel: NovelData) {
+export function content(novel: NovelData, coverPath: string, coverMimeType: string) {
 
     return `<?xml version="1.0" encoding="UTF-8"?>
 <package
@@ -19,14 +19,17 @@ export function content(novel: NovelData) {
     <dc:title>${escapeXml(novel.title)}</dc:title>
     <dc:language>en</dc:language>
     ${novel.description ? `<dc:description>${escapeXml(novel.description)}</dc:description>` : ""}
-    <dc:creator id="creator">${novel.author}</dc:creator>
+    <dc:creator id="creator">${escapeXml(novel.author)}</dc:creator>
+    <opf:meta name="cover" content="coverImg" />
 
     <meta property="dcterms:modified">${Date.now()}</meta>
   </metadata>
 
     <manifest>
       <item id="toc" href="toc.xhtml" media-type="application/xhtml+xml" properties="nav" />
-      <item id="chapter-image-placeholder" href="images/img-placeholder.jpg" media-type="image/jpeg" />
+      <item id="cover" href="cover.xhtml" media-type="application/xhtml+xml" />
+      <item id="coverImg" href="${coverPath}" media-type="${coverMimeType}" properties="cover-image"/>
+
       
       ${novel.chapters
           .map(
@@ -40,6 +43,7 @@ export function content(novel: NovelData) {
           .join("\n")}
     </manifest>
     <spine>
+      <itemref idref="cover" />
       <itemref idref="toc"/>
       ${novel.chapters.map((chapter) => `<itemref idref="chapter-${chapter.metaData.id}" />`).join("\n")}
     </spine>

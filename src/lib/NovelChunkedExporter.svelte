@@ -38,7 +38,7 @@
         concurrency: 5, // no more than 10 running at once
     });
 
-    const getChunks = () : NovelChunk[] => {
+    const getChunks = (): NovelChunk[] => {
         let chunks: NovelChunk[] = [];
 
         let numericStart = Number(start);
@@ -58,14 +58,13 @@
         let allChapters = $currentNovel.chaptersMetaData.slice(startIndex, endIndex);
 
         if (singleFile || numericChunkSize > endIndex - startIndex) {
-                
             // start: number;
             // end: number;
             // chapters: ChapterMetaData[];
             // name: string;
             // progress: ChunkProgress;
             // blob: Blob | null;
-                
+
             chunks.push({
                 start: startIndex,
                 end: endIndex,
@@ -77,8 +76,8 @@
                     done: false,
                 },
                 blob: null,
-            })
-            
+            });
+
             return chunks;
         }
 
@@ -102,7 +101,6 @@
     };
 
     const fetchChunk = async (chunk: NovelChunk): Promise<NovelData | undefined> => {
-
         let promises: Promise<[string, ChapterMetaData]>[] = [];
         let chapters: Chapter[] = [];
 
@@ -122,13 +120,23 @@
                         chunks = chunks;
                         return html;
                     })
-                    .then((html) => [html, chapter])
+                    .then((html) => [html, chapter]),
             );
             promises.push(promise);
         }
 
         await Promise.all(promises).then((res) => {
             for (let [chapterHtml, ChapterMetaData] of res) {
+
+                let secretDisplayClass ="";
+
+                // find class of secret display class using first capture group of following regex <style>\n.*\.(.*){
+                let secretDisplayMatch = chapterHtml.match(/<style>\n.*\.(.*){/);
+                if (secretDisplayMatch != null) {
+                    secretDisplayClass = secretDisplayMatch[1];
+                }        
+
+
                 let chapterDoc = parser.parseFromString(chapterHtml, "text/html");
 
                 // authorNotes = soup.find_all('div', class_='author-note-portlet')
@@ -140,14 +148,23 @@
                     }
                 });
 
-                // paragraphs = soup.find('div', class_='chapter-inner chapter-content').find_all('p')
-                let paragraphElements = chapterDoc.querySelector("div.chapter-inner.chapter-content")?.querySelectorAll("p");
+
+                // paragraphs = soup.find('div', class_='chapter-inner chapter-content').find_all('p') 
+                // and exclude paragraphs with the secret display class
+                let paragraphSelectorQuery = secretDisplayClass != "" ? `p:not(.${secretDisplayClass})` : "p";
+                let paragraphElements = chapterDoc
+                    .querySelector("div.chapter-inner.chapter-content")
+                    ?.querySelectorAll(paragraphSelectorQuery);
                 let content: string[] = [];
+
+                // check if the element is not null and dose not have a style of display none
                 paragraphElements?.forEach((p) => {
-                    if (p != null) {
+                    if (p != null ) {
                         content.push(p.textContent != null ? p.textContent.trim() : "");
                     }
                 });
+
+                // console.log(content)
 
                 chapters.push({
                     content: content,
@@ -170,8 +187,8 @@
 
     const download = async () => {
         chunks = getChunks();
-        
-        console.log(chunks);
+
+        // console.log(chunks);
 
         for (let i = 0; i < chunks.length; i++) {
             let chunk = chunks[i];
@@ -191,8 +208,6 @@
             chunk.progress.progress = chunk.progress.total;
             chunks = chunks;
         }
-
-
     };
 
     const downloadBlob = (blob: Blob, filename: string) => {
@@ -204,7 +219,6 @@
     };
 
     const downloadChunk = (chunk: NovelChunk) => {
-
         if (chunk.blob == null) {
             toast.error("Chunk has no blob");
             return;
@@ -268,7 +282,9 @@
 
                     {#each chunks as chunk}
                         <div class="grid grid-cols-1 gap-2">
-                            <div class="grid grid-cols-[minmax(50px,5%),minmax(0,80%),minmax(100px,15%)] gap-y-4 gap-x-2 place-items-center">
+                            <div
+                                class="grid grid-cols-[minmax(50px,5%),minmax(0,80%),minmax(100px,15%)] gap-y-4 gap-x-2"
+                            >
                                 <div>
                                     {#if chunk.progress.done}
                                         <Check class="text-primary" />
@@ -277,15 +293,17 @@
                                     {/if}
                                 </div>
 
-                                <div class="w-full">
+                                <div class="w-full place-self-start">
                                     <Tooltip.Root>
                                         <Tooltip.Trigger class="w-full">
                                             <div class="w-full grid grid-cols-1 gap-2">
                                                 <div class="grid grid-cols-2">
                                                     <Label class="place-self-start pl-4">{chunk.name}</Label>
-                                                    <Label class="place-self-end pr-4"> {chunk.progress.progress} of {chunk.progress.total} </Label>
+                                                    <Label class="place-self-end pr-4">
+                                                        {chunk.progress.progress} of {chunk.progress.total}
+                                                    </Label>
                                                 </div>
-                                                <Progress bind:value={chunk.progress.progress} max={chunk.progress.total}/>
+                                                <Progress bind:value={chunk.progress.progress} max={chunk.progress.total} />
                                             </div>
                                         </Tooltip.Trigger>
 
@@ -296,7 +314,11 @@
                                 </div>
 
                                 <div>
-                                    <Button variant="ghost" disabled={!chunk.progress.done} on:click={(e) => downloadChunk(chunk)}>Download</Button>
+                                    <Button
+                                        variant="ghost"
+                                        disabled={!chunk.progress.done}
+                                        on:click={(e) => downloadChunk(chunk)}>Download</Button
+                                    >
                                 </div>
                             </div>
                         </div>

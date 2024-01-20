@@ -35,7 +35,7 @@
     const limit = pRateLimit({
         interval: 9000, // 1000 ms == 1 second
         rate: 6, // 30 API calls per interval
-        concurrency: 5, // no more than 10 running at once
+        concurrency: 4, // no more than 10 running at once
     });
 
     const getChunks = (): NovelChunk[] => {
@@ -105,9 +105,12 @@
         let chapters: Chapter[] = [];
 
         for (let chapter of chunk.chapters) {
-            let corsUrl = `https://corsproxy.io/?${encodeURIComponent(chapter.url)}`;
+            // let corsUrl = `https://corsproxy.io/?${encodeURIComponent(chapter.url)}`;
             // let corsUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(chapter.url)}`;
+            let corsUrl = `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(chapter.url)}`;
             // let corsUrl = `https://cors-anywhere.herokuapp.com/corsdemo{encodeURIComponent(chapter.url)}`;
+            // let corsUrl = `https://12ft.io/${encodeURIComponent(chapter.url)}`;
+            // let corsUrl = `https://crossorigin.me/${encodeURIComponent(chapter.url)}`;
 
             // console.log(chapter.url);
             // console.log(`https://corsproxy.io/?${encodeURIComponent(chapter.url)}`)
@@ -128,14 +131,14 @@
         await Promise.all(promises).then((res) => {
             for (let [chapterHtml, ChapterMetaData] of res) {
 
-                let secretDisplayClass ="";
+
+                let secretDisplayClass = "";
 
                 // find class of secret display class using first capture group of following regex <style>\n.*\.(.*){
                 let secretDisplayMatch = chapterHtml.match(/<style>\n.*\.(.*){/);
                 if (secretDisplayMatch != null) {
                     secretDisplayClass = secretDisplayMatch[1];
-                }        
-
+                }
 
                 let chapterDoc = parser.parseFromString(chapterHtml, "text/html");
 
@@ -148,8 +151,7 @@
                     }
                 });
 
-
-                // paragraphs = soup.find('div', class_='chapter-inner chapter-content').find_all('p') 
+                // paragraphs = soup.find('div', class_='chapter-inner chapter-content').find_all('p')
                 // and exclude paragraphs with the secret display class
                 let paragraphSelectorQuery = secretDisplayClass != "" ? `p:not(.${secretDisplayClass})` : "p";
                 let paragraphElements = chapterDoc
@@ -159,7 +161,7 @@
 
                 // check if the element is not null and dose not have a style of display none
                 paragraphElements?.forEach((p) => {
-                    if (p != null ) {
+                    if (p != null) {
                         content.push(p.textContent != null ? p.textContent.trim() : "");
                     }
                 });

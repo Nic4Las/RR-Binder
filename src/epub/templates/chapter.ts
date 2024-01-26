@@ -1,4 +1,5 @@
 import type { Chapter } from "../../types/NovelData";
+import { escapeXml } from "../utils";
 
 export function renderChapter(chapter: Chapter, includeDate: boolean = false, includeSourceUrl: boolean = false) {
     
@@ -7,14 +8,14 @@ export function renderChapter(chapter: Chapter, includeDate: boolean = false, in
       <html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops" lang="en">
         <head>
         <meta charset="UTF-8" />
-        <title>${chapter.metaData.title}</title>
+        <title>${escapeXml(chapter.metaData.title)}</title>
         </head>
       <body>
-        <h1>${chapter.metaData.title}</h1>
-        ${includeDate ? `<p>${chapter.metaData.date}</p>` : ""}
-        ${includeSourceUrl ? `<p>Publication Date: ${chapter.metaData.url}</p>` : ""}
+        <h1>${escapeXml(chapter.metaData.title)}</h1>
+        ${includeDate ? `<p>${escapeXml(chapter.metaData.date)}</p>` : ""}
+        ${includeSourceUrl ? `<p>Publication Date: ${escapeXml(chapter.metaData.url)}</p>` : ""}
 
-        ${chapter.content.map((paragraph) => `<p>${paragraph}</p>`).join("\n")}
+        ${chapter.content.map((paragraph) => `<p>${escapeXml(paragraph)}</p>`).join("\n")}
 
       </body>
       </html>

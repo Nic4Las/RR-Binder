@@ -88,7 +88,7 @@ export const getNovelInfos = async (url:string) => {
     // let corsUrl = `https://api.allorigins.win/raw?url=${url}`;
     let corsUrl = `https://corsproxy.io/?${encodeURIComponent(url)}`;
 
-    console.log(corsUrl);
+    // console.log(corsUrl);
 
     let novelHtml = await fetch(corsUrl).then((res) => res.text());
     let novelDoc = parser.parseFromString(novelHtml, "text/html");
@@ -143,6 +143,6 @@ export const getNovelInfos = async (url:string) => {
     };
 
     window.localStorage.setItem("lastNovelUrl", url);
-    console.log(novelData);
+    // console.log(novelData);
     currentNovel.set(novelData);
 };

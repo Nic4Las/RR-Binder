@@ -135,10 +135,12 @@
                 let secretDisplayClass = "";
 
                 // find class of secret display class using first capture group of following regex <style>\n.*\.(.*){
-                let secretDisplayMatch = chapterHtml.match(/<style>\n.*\.(.*){/);
+                let secretDisplayMatch = chapterHtml.match(/<style>\n.*\.(.*){\n.*display: none/);
                 if (secretDisplayMatch != null) {
                     secretDisplayClass = secretDisplayMatch[1];
                 }
+
+                console.log(secretDisplayClass);
 
                 let chapterDoc = parser.parseFromString(chapterHtml, "text/html");
 
@@ -154,6 +156,7 @@
                 // paragraphs = soup.find('div', class_='chapter-inner chapter-content').find_all('p')
                 // and exclude paragraphs with the secret display class
                 let paragraphSelectorQuery = secretDisplayClass != "" ? `p:not(.${secretDisplayClass})` : "p";
+                console.log(paragraphSelectorQuery);
                 let paragraphElements = chapterDoc
                     .querySelector("div.chapter-inner.chapter-content")
                     ?.querySelectorAll(paragraphSelectorQuery);

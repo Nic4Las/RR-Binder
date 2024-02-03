@@ -22,11 +22,11 @@ export async function bindEpub(novel: NovelData) {
     let coverStr = cover(novel, coverFilePath);
     let chapterStrs = novel.chapters.map((chapter) => renderChapter(chapter));
 
-    console.log(containerStr);
-    console.log(contentStr);
-    console.log(tocStr);
-    console.log(coverStr);
-    console.log(chapterStrs);
+    // console.log(containerStr);
+    // console.log(contentStr);
+    // console.log(tocStr);
+    // console.log(coverStr);
+    // console.log(chapterStrs);
 
     
 

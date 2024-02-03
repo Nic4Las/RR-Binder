@@ -69,7 +69,7 @@
                 start: startIndex,
                 end: endIndex,
                 chapters: allChapters,
-                name: `Chapters ${startIndex + 1} to ${endIndex + 1}`,
+                name: `Chapters ${startIndex + 1} to ${allChapters.length}`,
                 progress: {
                     progress: 0,
                     total: allChapters.length,
@@ -87,7 +87,7 @@
                 start: startIndex + i,
                 end: startIndex + i + numericChunkSize,
                 chapters: chunk,
-                name: `Chapters ${startIndex + i + 1} to ${startIndex + i + numericChunkSize + 1}`,
+                name: `Chapters ${startIndex + i + 1} to ${startIndex + i + chunk.length}`,
                 progress: {
                     progress: 0,
                     total: chunk.length,

@@ -105,9 +105,9 @@
         let chapters: Chapter[] = [];
 
         for (let chapter of chunk.chapters) {
-            // let corsUrl = `https://corsproxy.io/?${encodeURIComponent(chapter.url)}`;
+            let corsUrl = `https://corsproxy.io/?${encodeURIComponent(chapter.url)}`;
             // let corsUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(chapter.url)}`;
-            let corsUrl = `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(chapter.url)}`;
+            // let corsUrl = `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(chapter.url)}`;
             // let corsUrl = `https://cors-anywhere.herokuapp.com/corsdemo{encodeURIComponent(chapter.url)}`;
             // let corsUrl = `https://12ft.io/${encodeURIComponent(chapter.url)}`;
             // let corsUrl = `https://crossorigin.me/${encodeURIComponent(chapter.url)}`;
@@ -140,7 +140,7 @@
                     secretDisplayClass = secretDisplayMatch[1];
                 }
 
-                console.log(secretDisplayClass);
+                // console.log(secretDisplayClass);
 
                 let chapterDoc = parser.parseFromString(chapterHtml, "text/html");
 
@@ -156,7 +156,7 @@
                 // paragraphs = soup.find('div', class_='chapter-inner chapter-content').find_all('p')
                 // and exclude paragraphs with the secret display class
                 let paragraphSelectorQuery = secretDisplayClass != "" ? `p:not(.${secretDisplayClass})` : "p";
-                console.log(paragraphSelectorQuery);
+                // console.log(paragraphSelectorQuery);
                 let paragraphElements = chapterDoc
                     .querySelector("div.chapter-inner.chapter-content")
                     ?.querySelectorAll(paragraphSelectorQuery);

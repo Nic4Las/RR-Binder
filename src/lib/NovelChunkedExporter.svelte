@@ -34,7 +34,7 @@
     const parser = new DOMParser();
     const limit = pRateLimit({
         interval: 10000, // 1000 ms == 1 second
-        rate: 5, // 30 API calls per interval
+        rate: , // 30 API calls per interval
         concurrency: 4, // no more than 10 running at once
     });
 
@@ -105,7 +105,9 @@
         let chapters: Chapter[] = [];
 
         for (let chapter of chunk.chapters) {
-            let corsUrl = `https://corsproxy.io/?${encodeURIComponent(chapter.url)}`;
+            
+            let corsUrl = `https://thingproxy.freeboard.io/fetch/${encodeURIComponent(chapter.url)}`;
+            // let corsUrl = `https://corsproxy.io/?${encodeURIComponent(chapter.url)}`;
             // let corsUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(chapter.url)}`;
             // let corsUrl = `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(chapter.url)}`;
             // let corsUrl = `https://cors-anywhere.herokuapp.com/corsdemo{encodeURIComponent(chapter.url)}`;

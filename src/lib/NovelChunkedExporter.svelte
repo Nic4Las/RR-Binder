@@ -34,7 +34,7 @@
     const parser = new DOMParser();
     const limit = pRateLimit({
         interval: 10000, // 1000 ms == 1 second
-        rate: , // 30 API calls per interval
+        rate: 5, // 30 API calls per interval
         concurrency: 4, // no more than 10 running at once
     });
 

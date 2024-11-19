@@ -107,7 +107,7 @@
         for (let chapter of chunk.chapters) {
 
             // https://nordicapis.com/10-free-to-use-cors-proxies/            
-            let corsUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(chapter.url)}`;
+            let corsUrl = `https://corsproxy.io/?${encodeURIComponent(chapter.url)}`;
             // let corsUrl = `https://thingproxy.freeboard.io/fetch/${encodeURIComponent(chapter.url)}`;
             // let corsUrl = `https://corsproxy.io/?${encodeURIComponent(chapter.url)}`;
             // let corsUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(chapter.url)}`;

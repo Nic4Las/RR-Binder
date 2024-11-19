@@ -105,8 +105,10 @@
         let chapters: Chapter[] = [];
 
         for (let chapter of chunk.chapters) {
-            
-            let corsUrl = `https://thingproxy.freeboard.io/fetch/${encodeURIComponent(chapter.url)}`;
+
+            // https://nordicapis.com/10-free-to-use-cors-proxies/            
+            let corsUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(chapter.url)}`;
+            // let corsUrl = `https://thingproxy.freeboard.io/fetch/${encodeURIComponent(chapter.url)}`;
             // let corsUrl = `https://corsproxy.io/?${encodeURIComponent(chapter.url)}`;
             // let corsUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(chapter.url)}`;
             // let corsUrl = `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(chapter.url)}`;
@@ -114,18 +116,11 @@
             // let corsUrl = `https://12ft.io/${encodeURIComponent(chapter.url)}`;
             // let corsUrl = `https://crossorigin.me/${encodeURIComponent(chapter.url)}`;
 
-            // console.log(chapter.url);
+            console.log(corsUrl);
             // console.log(`https://corsproxy.io/?${encodeURIComponent(chapter.url)}`)
 
             let promise: Promise<[string, ChapterMetaData]> = limit(() =>
-                fetch(corsUrl,
-                    {
-                        mode: 'cors',
-                        headers: {
-                            'Access-Control-Allow-Origin':'*'
-                        }
-                    }
-                )
+                fetch(corsUrl)
                     .then((res) => res.text())
                     .then((html) => {
                         chunk.progress.progress = chunk.progress.progress + 1;

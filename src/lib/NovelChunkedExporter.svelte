@@ -118,7 +118,14 @@
             // console.log(`https://corsproxy.io/?${encodeURIComponent(chapter.url)}`)
 
             let promise: Promise<[string, ChapterMetaData]> = limit(() =>
-                fetch(corsUrl)
+                fetch(corsUrl,
+                    {
+                        mode: 'cors',
+                        headers: {
+                            'Access-Control-Allow-Origin':'*'
+                        }
+                    }
+                )
                     .then((res) => res.text())
                     .then((html) => {
                         chunk.progress.progress = chunk.progress.progress + 1;

@@ -69,7 +69,7 @@
                 start: startIndex,
                 end: endIndex,
                 chapters: allChapters,
-                name: `Chapters ${startIndex + 1} to ${allChapters.length}`,
+                name: `Chapters ${startIndex + 1} to ${startIndex + allChapters.length}`,
                 progress: {
                     progress: 0,
                     total: allChapters.length,
@@ -157,21 +157,42 @@
                     }
                 });
 
-                // paragraphs = soup.find('div', class_='chapter-inner chapter-content').find_all('p')
-                // and exclude paragraphs with the secret display class
-                let paragraphSelectorQuery = secretDisplayClass != "" ? `p:not(.${secretDisplayClass})` : "p";
-                // console.log(paragraphSelectorQuery);
-                let paragraphElements = chapterDoc
-                    .querySelector("div.chapter-inner.chapter-content")
-                    ?.querySelectorAll(paragraphSelectorQuery);
+                let chapterContent = chapterDoc.querySelector("div.chapter-inner.chapter-content");
                 let content: string[] = [];
 
-                // check if the element is not null and dose not have a style of display none
-                paragraphElements?.forEach((p) => {
-                    if (p != null) {
-                        content.push(p.textContent != null ? p.textContent.trim() : "");
-                    }
-                });
+                if (chapterContent) {
+                    // Some novels use P tags, others use nested DIV tags for paragraphs.
+                    // We look for P tags or DIV tags that don't have any P or DIV children to find the actual paragraph content.
+                    const elements = chapterContent.querySelectorAll("p, div");
+                    elements.forEach((el) => {
+                        // Skip if it contains other paragraph-like elements (we want the innermost ones)
+                        if (el.querySelector("p, div")) {
+                            return;
+                        }
+
+                        // Skip elements with the secret display class (used by RR to hide "stolen" text)
+                        if (secretDisplayClass !== "" && el.classList.contains(secretDisplayClass)) {
+                            return;
+                        }
+
+                        // Check if any parent has the secret display class
+                        let parent = el.parentElement;
+                        let isHidden = false;
+                        while (parent && parent !== chapterContent) {
+                            if (secretDisplayClass !== "" && parent.classList.contains(secretDisplayClass)) {
+                                isHidden = true;
+                                break;
+                            }
+                            parent = parent.parentElement;
+                        }
+                        if (isHidden) return;
+
+                        const text = el.textContent?.trim();
+                        if (text) {
+                            content.push(text);
+                        }
+                    });
+                }
 
                 // console.log(content)
 

@@ -86,7 +86,7 @@ const parser = new DOMParser();
 
 export const getNovelInfos = async (url:string) => {
     // let corsUrl = `https://api.allorigins.win/raw?url=${url}`;
-    let corsUrl = `https://corsproxy.io/?url=${encodeURIComponent(chapter.url)}`;
+    let corsUrl = `https://corsproxy.io/?url=${encodeURIComponent(url)}`;
 
     // console.log(corsUrl);
 

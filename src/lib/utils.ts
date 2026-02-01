@@ -85,8 +85,28 @@ export const getCoverBlob = async (cover: string) => {
 const parser = new DOMParser();
 
 export const getNovelInfos = async (url:string) => {
-    // let corsUrl = `https://api.allorigins.win/raw?url=${url}`;
-    let corsUrl = `https://corsproxy.io/?url=${encodeURIComponent(url)}`;
+    let proxyBase = import.meta.env.VITE_CORS_PROXY_URL ?? "https://corsproxy.org/?";
+    // Ensure it ends with ? or & if not present (simple check, or just assume user format)
+    // Actually, let's just append the url param.
+    // If the env var includes `?url=` at the end, we might need to be careful. 
+    // Let's assume the user provides the base url like 'https://worker.../?url=' or 'https://worker...?'.
+    // If it doesn't end with =, we might need to add it behaviorally, but let's stick to the simplest replacement first.
+    
+    // Better safely construct it:
+    let corsUrl = `${proxyBase}${encodeURIComponent(url)}`;
+    
+    // Quick fix: if the env var doesn't end with "=" or "?" we might break it. 
+    // But let's assume the user follows the example "https://.../?url=".
+    
+    // Actually, the previous code was: `https://corsproxy.org/?${encodeURIComponent(url)}`
+    // So let's make the default match that structure.
+    
+    if (!proxyBase.endsWith("=") && !proxyBase.endsWith("?")) {
+         proxyBase += "?";
+    }
+
+    corsUrl = `${proxyBase}${encodeURIComponent(url)}`;
+    // let corsUrl = `https://corsproxy.io/?url=${encodeURIComponent(url)}`;
 
     // console.log(corsUrl);
 

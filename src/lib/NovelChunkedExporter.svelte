@@ -33,9 +33,9 @@
 
     const parser = new DOMParser();
     const limit = pRateLimit({
-        interval: 20000, // 1000 ms == 1 second
-        rate: 5, // 30 API calls per interval
-        concurrency: 2, // no more than 10 running at once
+        interval: 1000, // 1 second
+        rate: 5, // 5 API calls per interval
+        concurrency: 5, // no more than 5 running at once
     });
 
     const getChunks = (): NovelChunk[] => {
@@ -105,9 +105,21 @@
         let chapters: Chapter[] = [];
 
         for (let chapter of chunk.chapters) {
+            // https://nordicapis.com/10-free-to-use-cors-proxies/
+            // let corsUrl = `https://corsproxy.io/?url=${encodeURIComponent(chapter.url)}`;
+            let proxyBase = import.meta.env.VITE_CORS_PROXY_URL ?? "https://corsproxy.org/?";
 
-            // https://nordicapis.com/10-free-to-use-cors-proxies/            
-            let corsUrl = `https://corsproxy.io/?url=${encodeURIComponent(chapter.url)}`;
+            // Normalize the proxy base to ensure it's ready for a query param
+            if (!proxyBase.includes("?")) {
+                proxyBase += "?";
+            }
+            if (!proxyBase.endsWith("=") && !proxyBase.endsWith("?")) {
+                // If it ends in ? but no param name, blindly append url (risky if not default)
+                // If it's the worker, it needs key=value usually.
+                // Let's assume standard behavior: append the encoded URL.
+            }
+
+            let corsUrl = `${proxyBase}${encodeURIComponent(chapter.url)}`;
             // let corsUrl = `https://thingproxy.freeboard.io/fetch/${encodeURIComponent(chapter.url)}`;
             // let corsUrl = `https://corsproxy.io/?${encodeURIComponent(chapter.url)}`;
             // let corsUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(chapter.url)}`;
@@ -134,8 +146,6 @@
 
         await Promise.all(promises).then((res) => {
             for (let [chapterHtml, ChapterMetaData] of res) {
-
-
                 let secretDisplayClass = "";
 
                 // find class of secret display class using first capture group of following regex <style>\n.*\.(.*){
